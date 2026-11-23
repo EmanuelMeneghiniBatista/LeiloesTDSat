@@ -140,7 +140,25 @@ public class listagemVIEW extends javax.swing.JFrame {
         
         ProdutosDAO produtosdao = new ProdutosDAO();
         
-        //produtosdao.venderProduto(Integer.parseInt(id));
+        if (id.trim().isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Informe o ID do produto que deseja vender.", "Atenção", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        int idProduto;
+        try {
+            idProduto = Integer.parseInt(id.trim());
+        } catch (NumberFormatException erro) {
+            javax.swing.JOptionPane.showMessageDialog(this, "O ID deve ser um número inteiro.", "Atenção", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        if (produtosdao.venderProduto(idProduto)) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Produto vendido com sucesso!");
+            id_produto_venda.setText("");
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Não foi possível vender: produto não encontrado.", "Erro", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
         listarProdutos();
     }//GEN-LAST:event_btnVenderActionPerformed
 
