@@ -91,6 +91,34 @@ public class ProdutosDAO {
         return listagem;
     }
     
+    public boolean venderProduto (int id){
+        
+        String sql = "UPDATE produtos SET status = 'Vendido' WHERE id = ?";
+        
+        conn = new conectaDAO().connectDB();
+        
+        if (conn == null) {
+            return false;
+        }
+        
+        try {
+            prep = conn.prepareStatement(sql);
+            prep.setInt(1, id);
+            // retorna true somente se algum produto foi realmente atualizado
+            return prep.executeUpdate() > 0;
+        } catch (SQLException erro) {
+            return false;
+        } finally {
+            try {
+                if (prep != null) prep.close();
+                conn.close();
+            } catch (SQLException erro) {
+                // nada a fazer ao fechar a conexão
+            }
+        }
+        
+    }
+    
     
     
         
