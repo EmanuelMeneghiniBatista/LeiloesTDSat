@@ -91,6 +91,72 @@ public class ProdutosDAO {
         return listagem;
     }
     
+    public ArrayList<ProdutosDTO> listarProdutosVendidos(){
+        
+        String sql = "SELECT * FROM produtos WHERE status = 'Vendido'";
+        ArrayList<ProdutosDTO> vendidos = new ArrayList<>();
+        
+        conn = new conectaDAO().connectDB();
+        
+        if (conn == null) {
+            return vendidos;
+        }
+        
+        try {
+            prep = conn.prepareStatement(sql);
+            resultset = prep.executeQuery();
+            
+            while (resultset.next()) {
+                ProdutosDTO produto = new ProdutosDTO();
+                produto.setId(resultset.getInt("id"));
+                produto.setNome(resultset.getString("nome"));
+                produto.setValor(resultset.getInt("valor"));
+                produto.setStatus(resultset.getString("status"));
+                vendidos.add(produto);
+            }
+        } catch (SQLException erro) {
+            JOptionPane.showMessageDialog(null, "Erro ao listar produtos vendidos: " + erro.getMessage());
+        } finally {
+            try {
+                if (resultset != null) resultset.close();
+                if (prep != null) prep.close();
+                conn.close();
+            } catch (SQLException erro) {
+                // nada a fazer ao fechar a conexão
+            }
+        }
+        
+        return vendidos;
+    }
+    
+    public boolean venderProduto (int id){
+        
+        String sql = "UPDATE produtos SET status = 'Vendido' WHERE id = ?";
+        
+        conn = new conectaDAO().connectDB();
+        
+        if (conn == null) {
+            return false;
+        }
+        
+        try {
+            prep = conn.prepareStatement(sql);
+            prep.setInt(1, id);
+            // retorna true somente se algum produto foi realmente atualizado
+            return prep.executeUpdate() > 0;
+        } catch (SQLException erro) {
+            return false;
+        } finally {
+            try {
+                if (prep != null) prep.close();
+                conn.close();
+            } catch (SQLException erro) {
+                // nada a fazer ao fechar a conexão
+            }
+        }
+        
+    }
+    
     
     
         
